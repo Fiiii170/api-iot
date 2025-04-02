@@ -11,8 +11,8 @@ app.use(cors());
 app.use(express.json());
 
 // เชื่อมต่อกับ MongoDB
-mongoose.connect("mongodb://localhost:27017", {
-// mongoose.connect("mongodb+srv://muhammadlutfim:SUjTSNIMjugTrgWq@mydb.16hil.mongodb.net/?retryWrites=true&w=majority&appName=mydb", {
+// mongoose.connect("mongodb://localhost:27017", {
+mongoose.connect("mongodb+srv://muhammadlutfim:SUjTSNIMjugTrgWq@mydb.16hil.mongodb.net/?retryWrites=true&w=majority&appName=mydb", {
     useNewUrlParser: true,
     useUnifiedTopology: true
 }).then(() => console.log("📌 MongoDB Connected"))
