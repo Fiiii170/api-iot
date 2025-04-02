@@ -110,6 +110,42 @@ app.delete("/api/rfid/:id", async (req, res) => {
     }
 });
 
+// สร้าง Schema สำหรับบัตรที่อนุญาต
+const allowedCardSchema = new mongoose.Schema({
+    uid: String,
+    user: String
+});
+const AllowedCard = mongoose.model("AllowedCard", allowedCardSchema);
+
+// ✅ เพิ่มบัตรที่อนุญาต (POST)
+app.post("/api/rfid/allowlist", async (req, res) => {
+    try {
+        const { uid, user } = req.body;
+        const existingCard = await AllowedCard.findOne({ uid });
+
+        if (existingCard) {
+            return res.status(400).json({ message: "UID นี้มีอยู่แล้ว" });
+        }
+
+        const newCard = new AllowedCard({ uid, user });
+        await newCard.save();
+        res.status(200).json({ message: "บัตรถูกเพิ่มเรียบร้อย", uid, user });
+    } catch (error) {
+        res.status(500).json({ message: "เกิดข้อผิดพลาด" });
+    }
+});
+
+// 🔍 ดึงรายการบัตรที่อนุญาต (GET)
+app.get("/api/rfid/allowlist", async (req, res) => {
+    try {
+        const cards = await AllowedCard.find();
+        res.json(cards);
+    } catch (error) {
+        res.status(500).json({ message: "เกิดข้อผิดพลาด" });
+    }
+});
+
+
 app.listen(port, () => {
     console.log(`🚀 Server running on ${port}`);
 });
