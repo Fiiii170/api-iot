@@ -6,12 +6,10 @@ const cors = require("cors");
 const app = express();
 const port = process.env.PORT || 3000;
 
-
 app.use(cors());
 app.use(express.json());
 
 // เชื่อมต่อกับ MongoDB
-// mongoose.connect("mongodb://localhost:27017", {
 mongoose.connect("mongodb+srv://muhammadlutfim:SUjTSNIMjugTrgWq@mydb.16hil.mongodb.net/?retryWrites=true&w=majority&appName=mydb", {
     useNewUrlParser: true,
     useUnifiedTopology: true
@@ -22,7 +20,6 @@ mongoose.connect("mongodb+srv://muhammadlutfim:SUjTSNIMjugTrgWq@mydb.16hil.mongo
 const rfidSchema = new mongoose.Schema({
     uid: String,
     user: String,
-    xx: String,
     timestamp: {
         type: String,
         default: () => moment().tz("Asia/Bangkok").format("YYYY-MM-DD HH:mm:ss")
@@ -34,12 +31,12 @@ const RFIDLog = mongoose.model("RFIDLog", rfidSchema);
 // ✅ เพิ่มข้อมูล (POST)
 app.post("/api/rfid", async (req, res) => {
     try {
-        const { uid, user,xx } = req.body;
-        console.log({uid,user,xx})
-        const newEntry = new RFIDLog({ uid, user,xx });
+        const { uid, user } = req.body;
+        console.log({ uid, user });
+        const newEntry = new RFIDLog({ uid, user });
         await newEntry.save();
         console.log(`✅ บันทึก RFID: UID=${uid}, User=${user}, Time=${newEntry.timestamp}`);
-        res.status(200).json({ message: "Data saved successfully", uid, user,xx, timestamp: newEntry.timestamp });
+        res.status(200).json({ message: "Data saved successfully", uid, user, timestamp: newEntry.timestamp });
     } catch (error) {
         console.error("❌ Error saving to MongoDB:", error);
         res.status(500).json({ message: "Error saving data" });
@@ -56,6 +53,7 @@ app.get('/api/get', async (req, res) => {
         res.status(500).json({ message: "Error retrieving data" });
     }
 });
+
 
 // 🗑 ลบข้อมูลทั้งหมด (DELETE)
 app.delete("/api/rfid", async (req, res) => {
