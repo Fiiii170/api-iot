@@ -6,6 +6,7 @@ const cors = require("cors");
 const app = express();
 const port = process.env.PORT || 3000;
 
+
 app.use(cors());
 app.use(express.json());
 
@@ -32,7 +33,6 @@ const RFIDLog = mongoose.model("RFIDLog", rfidSchema);
 app.post("/api/rfid", async (req, res) => {
     try {
         const { uid, user } = req.body;
-        console.log({ uid, user });
         const newEntry = new RFIDLog({ uid, user });
         await newEntry.save();
         console.log(`✅ บันทึก RFID: UID=${uid}, User=${user}, Time=${newEntry.timestamp}`);
@@ -53,7 +53,6 @@ app.get('/api/get', async (req, res) => {
         res.status(500).json({ message: "Error retrieving data" });
     }
 });
-
 
 // 🗑 ลบข้อมูลทั้งหมด (DELETE)
 app.delete("/api/rfid", async (req, res) => {
@@ -112,5 +111,5 @@ app.delete("/api/rfid/:id", async (req, res) => {
 });
 
 app.listen(port, () => {
-    console.log(`🚀 Server running on http://localhost:${port}`);
+    console.log(`🚀 Server running on ${port}`);
 });
